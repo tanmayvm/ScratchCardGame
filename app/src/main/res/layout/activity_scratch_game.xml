@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_yellow_background"
+    android:fitsSystemWindows="true"
+    tools:context=".ScratchGameActivity">
+
+    <FrameLayout
+        android:id="@+id/scratch_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/resetButton"
+        android:layout_below="@+id/size_slider_container"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/image_border"
+        android:padding="5dp">
+
+        <com.example.scrachfun.ScratchImageView
+            android:id="@+id/scratchImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <!-- Floating Size Slider Container -->
+    <LinearLayout
+        android:id="@+id/size_slider_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#A0FFFFFF"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brush Size" />
+
+        <SeekBar
+            android:id="@+id/sizeSeekBar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="100" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/blue_button_background"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:text="New Image"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

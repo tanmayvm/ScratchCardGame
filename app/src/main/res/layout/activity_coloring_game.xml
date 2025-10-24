@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ColoringGameActivity">
+
+    <com.example.scrachfun.DrawingView
+        android:id="@+id/drawingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Floating Tools Palette -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:background="#A0FFFFFF"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <ImageButton android:id="@+id/color_black" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_black" android:layout_margin="8dp"/>
+        <ImageButton android:id="@+id/color_red" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_red" android:layout_margin="8dp"/>
+        <ImageButton android:id="@+id/color_green" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_green" android:layout_margin="8dp"/>
+        <ImageButton android:id="@+id/color_blue" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_blue" android:layout_margin="8dp"/>
+        <ImageButton android:id="@+id/color_yellow" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_yellow" android:layout_margin="8dp"/>
+        <ImageButton android:id="@+id/color_magenta" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_magenta" android:layout_margin="8dp"/>
+        <ImageButton android:id="@+id/color_cyan" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_cyan" android:layout_margin="8dp"/>
+
+        <ImageButton
+            android:id="@+id/brush_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_edit"
+            android:layout_marginTop="16dp"/>
+
+        <ImageButton
+            android:id="@+id/eraser_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_eraser_icon"/>
+
+    </LinearLayout>
+
+    <!-- Floating Size Slider Container -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#A0FFFFFF"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brush Size" />
+
+        <SeekBar
+            android:id="@+id/sizeSeekBar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="20" />
+    </LinearLayout>
+
+</RelativeLayout>
