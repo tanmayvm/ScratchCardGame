@@ -8,17 +8,9 @@
 
     <ImageView
         android:id="@+id/sketch_image"
-        android:layout_width="56dp" 
-        android:layout_height="56dp"
+        android:layout_width="100dp" 
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:background="@drawable/image_border"/>
-
-    <TextView
-        android:id="@+id/sketch_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:layout_marginTop="4dp"/>
 
 </LinearLayout>

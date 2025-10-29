@@ -13,14 +13,4 @@
         android:layout_centerVertical="true"
         android:background="@drawable/image_border"/>
 
-    <TextView
-        android:id="@+id/sketch_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/sketch_image"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"/>
-
 </RelativeLayout>

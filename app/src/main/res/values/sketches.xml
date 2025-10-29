@@ -2,7 +2,7 @@
 <resources>
     <string-array name="sketch_paths">
         <item>None</item>
-        <item>images/easter-coloring-page.jpg</item>
+        <item>images/easter-coloring-pages-02.jpg</item>
         <item>images/icon.jpg</item>
     </string-array>
 </resources>

@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="sketch_array">
+        <item>None</item>
+        <item>Bus</item>
+        <item>Cat</item>
+        <item>Turtle</item>
+        <item>Icon</item>
+    </string-array>
 </resources>
