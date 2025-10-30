@@ -12,7 +12,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
+import android.view.ViewConfiguration
 import java.io.IOException
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -36,15 +38,27 @@ class DrawingView @JvmOverloads constructor(
     private var offsetY = 0f
     private var lastPanX = 0f
     private var lastPanY = 0f
-    private var isPanning = false
     private var scaleFactor = 1.0f
     private val minScaleFactor = 0.5f
     private val maxScaleFactor = 5.0f
     private lateinit var scaleGestureDetector: ScaleGestureDetector
 
+    // Touch event state
+    private var startX = 0f
+    private var startY = 0f
+    private var isDrawing = false
+    private val touchSlop: Int
+
     private var isErasing = false
     private var eraserX = 0f
     private var eraserY = 0f
+
+    private enum class Mode {
+        NONE,
+        DRAW,
+        PAN_ZOOM
+    }
+    private var mode = Mode.NONE
 
     init {
         drawPaint.isAntiAlias = true
@@ -60,14 +74,24 @@ class DrawingView @JvmOverloads constructor(
             style = Paint.Style.STROKE
             strokeWidth = 2f
         }
-        
+
         scaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
+        touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
+            val oldScaleFactor = scaleFactor
             scaleFactor *= detector.scaleFactor
             scaleFactor = max(minScaleFactor, min(scaleFactor, maxScaleFactor))
+
+            // This logic correctly zooms into the focal point.
+            // We will let the manual pan handle the rest.
+            val focusX = detector.focusX
+            val focusY = detector.focusY
+            offsetX = focusX - (focusX - offsetX) * (scaleFactor / oldScaleFactor)
+            offsetY = focusY - (focusY - offsetY) * (scaleFactor / oldScaleFactor)
+            
             invalidate()
             return true
         }
@@ -90,7 +114,9 @@ class DrawingView @JvmOverloads constructor(
         canvas.translate(offsetX, offsetY)
         canvas.scale(scaleFactor, scaleFactor)
         canvas.drawBitmap(canvasBitmap!!, 0f, 0f, canvasPaint)
-        canvas.drawPath(currentPath, drawPaint)
+        if (isDrawing) {
+            canvas.drawPath(currentPath, drawPaint)
+        }
         canvas.restore()
 
         if (isErasing && eraserX != -1f) {
@@ -109,50 +135,64 @@ class DrawingView @JvmOverloads constructor(
             eraserY = touchY
         }
 
-        // Don't draw or pan while scaling
-        if (scaleGestureDetector.isInProgress) {
-            currentPath.reset()
-            return true
-        }
-        
         val scaledX = (touchX - offsetX) / scaleFactor
         val scaledY = (touchY - offsetY) / scaleFactor
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                isPanning = false
-                currentPath.moveTo(scaledX, scaledY)
+                mode = Mode.DRAW
+                isDrawing = false
+                startX = scaledX
+                startY = scaledY
+                currentPath.reset()
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
-                if (event.pointerCount > 1) {
-                    isPanning = true
-                    currentPath.reset() // Stop drawing
-                    lastPanX = event.getX(0)
-                    lastPanY = event.getY(0)
-                }
+                mode = Mode.PAN_ZOOM
+                currentPath.reset()
+                isDrawing = false
+                // Record initial midpoint for panning
+                lastPanX = (event.getX(0) + event.getX(1)) / 2
+                lastPanY = (event.getY(0) + event.getY(1)) / 2
             }
             MotionEvent.ACTION_MOVE -> {
-                if (isPanning && event.pointerCount > 1) {
-                    val dx = event.getX(0) - lastPanX
-                    val dy = event.getY(0) - lastPanY
-                    offsetX += dx
-                    offsetY += dy
-                    lastPanX = event.getX(0)
-                    lastPanY = event.getY(0)
-                } else if (!isPanning) {
-                    currentPath.lineTo(scaledX, scaledY)
+                if (mode == Mode.PAN_ZOOM) {
+                    // Only pan if not scaling, to prevent conflicts
+                    if (!scaleGestureDetector.isInProgress) {
+                        val midX = (event.getX(0) + event.getX(1)) / 2
+                        val midY = (event.getY(0) + event.getY(1)) / 2
+                        val dx = midX - lastPanX
+                        val dy = midY - lastPanY
+                        offsetX += dx
+                        offsetY += dy
+                        lastPanX = midX
+                        lastPanY = midY
+                    }
+                } else if (mode == Mode.DRAW) {
+                    val dx = abs(scaledX - startX)
+                    val dy = abs(scaledY - startY)
+                    if (dx >= touchSlop || dy >= touchSlop) {
+                        if (!isDrawing) {
+                            currentPath.moveTo(startX, startY)
+                        }
+                        currentPath.lineTo(scaledX, scaledY)
+                        isDrawing = true
+                    }
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                if (!isPanning) {
+            MotionEvent.ACTION_UP -> {
+                if (mode == Mode.DRAW && isDrawing) {
                     drawCanvas?.drawPath(currentPath, drawPaint)
                 }
+                mode = Mode.NONE
+                isDrawing = false
                 currentPath.reset()
-                isPanning = false
                 if (isErasing) {
-                    eraserX = -1f // Hide cursor when not touching
-                    eraserY = -1f
+                    eraserX = -1f
                 }
+            }
+            MotionEvent.ACTION_POINTER_UP -> {
+                mode = Mode.NONE
+                currentPath.reset()
             }
         }
 
@@ -163,10 +203,8 @@ class DrawingView @JvmOverloads constructor(
     private fun resetCanvas(viewWidth: Int, viewHeight: Int) {
         drawCanvas?.drawColor(Color.WHITE)
         scaleFactor = 1.0f
-        val canvasWidth = viewWidth * 3
-        val canvasHeight = viewHeight * 3
-        offsetX = (-(canvasWidth - viewWidth) / 2).toFloat()
-        offsetY = (-(canvasHeight - viewHeight) / 2).toFloat()
+        offsetX = (viewWidth - (drawCanvas?.width ?: 0) * scaleFactor) / 2
+        offsetY = (viewHeight - (drawCanvas?.height ?: 0) * scaleFactor) / 2
         invalidate()
     }
 
@@ -212,8 +250,8 @@ class DrawingView @JvmOverloads constructor(
             val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeStream(inputStream, null, options)
             options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
-            options.inJustDecodeBounds = false
             context.assets.open(assetPath).use { secondInputStream ->
+                options.inJustDecodeBounds = false
                 return BitmapFactory.decodeStream(secondInputStream, null, options)
             }
         }
