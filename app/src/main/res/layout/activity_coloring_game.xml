@@ -6,102 +6,57 @@
     android:fitsSystemWindows="true"
     tools:context=".ColoringGameActivity">
 
-    <FrameLayout
-        android:id="@+id/drawing_container"
+    <!-- Drawing Canvas -->
+    <com.example.scrachfun.DrawingView
+        android:id="@+id/drawingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/image_border"
-        android:padding="5dp">
+        android:background="@android:color/white" />
 
-        <com.example.scrachfun.DrawingView
-            android:id="@+id/drawingView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white" />
-
-    </FrameLayout>
-
-    <!-- Floating Tools Palette -->
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:background="#A0FFFFFF">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
-
-            <ImageButton android:id="@+id/color_black" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_black" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_red" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_red" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_green" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_green" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_blue" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_blue" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_yellow" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_yellow" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_magenta" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_magenta" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_cyan" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_cyan" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_orange" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_orange" android:layout_margin="8dp"/>
-            <ImageButton android:id="@+id/color_brown" android:layout_width="40dp" android:layout_height="40dp" android:background="@drawable/bordered_color_brown" android:layout_margin="8dp"/>
-
-            <ImageButton
-                android:id="@+id/brush_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@android:drawable/ic_menu_edit"
-                android:layout_marginTop="16dp"/>
-
-            <ImageButton
-                android:id="@+id/eraser_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_eraser_icon"/>
-
-            <ImageButton
-                android:id="@+id/reset_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@android:drawable/ic_menu_revert"/>
-            
-            <ImageButton
-                android:id="@+id/select_sketch_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@android:drawable/ic_menu_gallery"/>
-
-        </LinearLayout>
-    </ScrollView>
-
-    <!-- Floating Size Slider Container -->
+    <!-- Floating Main Toolbar -->
     <LinearLayout
+        android:id="@+id/main_toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
         android:background="#A0FFFFFF"
-        android:gravity="center"
-        android:padding="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Brush Size" />
+        <ImageButton
+            android:id="@+id/color_picker_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/color_picker_preview" />
 
-        <SeekBar
-            android:id="@+id/sizeSeekBar"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="20" />
+        <ImageButton
+            android:id="@+id/brush_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_edit" />
 
+        <ImageButton
+            android:id="@+id/eraser_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_eraser_icon"/>
+
+        <ImageButton
+            android:id="@+id/reset_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_revert"/>
+        
+        <ImageButton
+            android:id="@+id/select_sketch_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_gallery"/>
     </LinearLayout>
     
+    <!-- Sketch Selection Panel (remains unchanged) -->
     <include
         layout="@layout/sketch_selection_panel"
         android:id="@+id/sketch_panel"
